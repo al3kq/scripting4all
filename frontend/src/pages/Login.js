@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';  // Import useNavigate
+import { Container, Title, Form, FormGroup, Label, Input, Button } from '../styles';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -26,32 +27,32 @@ function Login() {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username:</label>
-          <input
+    <Container>
+      <Title>Login</Title>
+      <Form onSubmit={handleSubmit}>
+        <FormGroup>
+          <Label htmlFor="username">Username:</Label>
+          <Input
             type="text"
             id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
+        </FormGroup>
+        <FormGroup>
+          <Label htmlFor="password">Password:</Label>
+          <Input
             type="password"
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-    </div>
+        </FormGroup>
+        <Button type="submit">Login</Button>
+      </Form>
+    </Container>
   );
 }
 

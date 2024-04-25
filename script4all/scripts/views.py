@@ -2,7 +2,7 @@ from rest_framework import generics
 from .models import ScriptRequest, GeneratedScript
 from .serializers import ScriptRequestSerializer
 from ai_logic.script_generator import generate_code
-from ai_logic.execute_script import execute_code
+# from ai_logic.execute_script import execute_code
 
 class ScriptRequestCreateView(generics.CreateAPIView):
     queryset = ScriptRequest.objects.all()
@@ -27,4 +27,4 @@ class ScriptRequestCreateView(generics.CreateAPIView):
         )
         
         # Optionally execute the generated code in a secure environment
-        output = execute_code(generated_code)
+        # output = execute_code(generated_code)

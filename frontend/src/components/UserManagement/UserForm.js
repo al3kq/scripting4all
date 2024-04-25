@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import api from '../../api';
-
+import { Form, FormGroup, Title, Container, Label, Input, Button } from '../../styles';
 
 function UserForm() {
   const [username, setUsername] = useState('');
@@ -24,39 +24,42 @@ function UserForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="username">Username:</label>
-        <input
-          type="text"
-          id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <button type="submit">Register</button>
-    </form>
+    <Container>
+        <Title>Sign Up</Title>
+        <Form onSubmit={handleSubmit}>
+        <FormGroup>
+            <Label htmlFor="username">Username:</Label>
+            <Input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            />
+        </FormGroup>
+        <FormGroup>
+            <Label htmlFor="email">Email:</Label>
+            <Input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            />
+        </FormGroup>
+        <FormGroup>
+            <Label htmlFor="password">Password:</Label>
+            <Input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            />
+        </FormGroup>
+        <Button type="submit">Register</Button>
+        </Form>
+    </Container>
   );
 }
 

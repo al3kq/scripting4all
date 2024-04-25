@@ -4,10 +4,7 @@ import UserList from '../components/UserManagement/UserList';
 
 function UserManagement() {
   return (
-    <div>
-      <h1>Sign Up</h1>
       <UserForm />
-    </div>
   );
 }
 

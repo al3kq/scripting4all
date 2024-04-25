@@ -10,7 +10,7 @@ function Header() {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/register">User Registration</Link>
+            <Link to="/register">Sign Up</Link>
           </li>
           <li>
             <Link to="/login">Login</Link>
@@ -18,12 +18,6 @@ function Header() {
           <li>
             <Link to="/script-request">Script Request</Link>
           </li>
-          {/* Add a conditional rendering for admin users */}
-          {isAdmin && (
-            <li>
-              <Link to="/admin/users">Admin User Management</Link>
-            </li>
-          )}
         </ul>
       </nav>
     </header>

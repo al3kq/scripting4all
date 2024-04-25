@@ -12,7 +12,7 @@ class ScriptRequest(models.Model):
         ('failed', 'Failed'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='script_requests')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='script_requests', null=True)
     title = models.CharField(max_length=100)
     description = models.TextField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')

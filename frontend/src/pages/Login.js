@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import api from '../api';
+import { useNavigate } from 'react-router-dom';  // Import useNavigate
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();  // Initialize useNavigate
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -12,11 +14,14 @@ function Login() {
         username,
         password,
       });
-      console.log(response.data);
-      // TODO: Handle successful login (e.g., store token, redirect to dashboard)
+      localStorage.setItem('username', username);
+      localStorage.setItem('token', response.data.token)
+      // Handle successful login (e.g., store token)
+      // Redirect to dashboard
+      navigate('/dashboard');  // Navigate to UserDashboard upon successful login
     } catch (error) {
       console.error('Error:', error);
-      // TODO: Handle login error (e.g., display error message)
+      // Handle login error (e.g., display error message)
     }
   };
 

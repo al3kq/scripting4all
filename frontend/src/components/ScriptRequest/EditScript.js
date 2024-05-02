@@ -1,15 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../../api';
-import { Form, FormGroup, Label, Input, Textarea, Button } from '../../styles';
+import { Form, FormGroup, Label, Input, Textarea, Button, SmallHeading } from '../../styles';
+import AutoResizingTextarea from './CodeBox';
+import { useParams } from 'react-router-dom';
 
-function ScriptRequestForm() {
+
+function EditScriptForm() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [inputValues, setInputValues] = useState('');
   const [codeBody, setCodeBody] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formValid, setFormValid] = useState(false);
+  const { scriptId } = useParams();
 
+  useEffect(() => {
+    const fetchScriptData = async () => {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await api.get(`/api/scripts/script-requests/${scriptId}/`, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        setTitle(response.data.script_request.title);
+        setDescription(response.data.script_request.description);
+        setCodeBody(response.data.generated_script.code)
+      } catch (error) {
+        console.error('Error fetching script:', error);
+      }
+    };
+
+    fetchScriptData();
+  }, [scriptId]);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormSubmitted(true);
@@ -21,37 +42,20 @@ function ScriptRequestForm() {
     }
 
     try {
-      const response = await api.post('/api/scripts/script-requests/', {
+      const response = await api.put(`/api/scripts/script-requests/${scriptId}/`, {
         title,
         description,
       }, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Token ${token}`,
+        },
       });
       console.log(response.data);
       setFormValid(true);
+      setCodeBody(response.data.generated_script.code);
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error);
       setFormValid(false);
-    }
-  };
-
-  const fetchInputValues = async () => {
-    try {
-      const response = await api.get('/api/scripts/input-values/');
-      setInputValues(response.data);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
-  const fetchCodeBody = async () => {
-    try {
-      const response = await api.get('/api/scripts/code-body/');
-      setCodeBody(response.data);
-    } catch (error) {
-      console.error('Error:', error);
     }
   };
 
@@ -79,36 +83,17 @@ function ScriptRequestForm() {
         </FormGroup>
         <Button type="submit">Submit Script Request</Button>
       </Form>
-
-      {formSubmitted && (
-        <div>
-          {formValid ? (
-            <div>
-              <p>Form submitted successfully!</p>
-              <Button onClick={fetchInputValues}>Get Input Values</Button>
-              <Button onClick={fetchCodeBody}>Get Code Body</Button>
-            </div>
-          ) : (
-            <p>Form submission failed. Please try again.</p>
-          )}
-        </div>
-      )}
-
-      {inputValues && (
-        <div>
-          <h3>Input Values:</h3>
-          <p>{inputValues}</p>
-        </div>
-      )}
-
-      {codeBody && (
-        <div>
-          <h3>Code Body:</h3>
-          <pre>{codeBody}</pre>
-        </div>
-      )}
+      {/* Ensure the code body FormGroup is part of the overall structure */}
+        <FormGroup>
+          <SmallHeading>Code Body:</SmallHeading>
+          <AutoResizingTextarea
+            id="code"
+            value={codeBody}
+            readOnly // Set as readOnly if it's not meant to be edited
+          ></AutoResizingTextarea>
+        </FormGroup>
     </div>
   );
 }
 
-export default ScriptRequestForm;
+export default EditScriptForm;

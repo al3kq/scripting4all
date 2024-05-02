@@ -1,8 +1,10 @@
 import React from 'react';
-import CreateScriptForm from '../components/ScriptRequest/CreateScript';
+import EditScriptForm from '../components/ScriptRequest/EditScript';
 import {ScriptList, Paragraph, Container, Title, Button, Heading } from '../styles'; // Ensure imports are correct
+import { useParams } from 'react-router-dom';
 
-function ScriptRequest() {
+function ScriptEdit() {
+    const { scriptId } = useParams();
   // TODO: Check if the user is logged in
   const isLoggedIn = true; // Replace with actual login check
 
@@ -13,10 +15,10 @@ function ScriptRequest() {
 
   return (
     <Container>
-      <Title>Script Request</Title>
-      <CreateScriptForm />
+      <Title>Edit Script</Title>
+      <EditScriptForm scriptId={scriptId}/>
     </Container>
   );
 }
 
-export default ScriptRequest;
+export default ScriptEdit;

@@ -23,6 +23,7 @@ class ScriptRequest(models.Model):
         return self.title
 
 class GeneratedScript(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='generate_script', null=True)
     script_request = models.OneToOneField(ScriptRequest, on_delete=models.CASCADE, related_name='generated_script')
     code = models.TextField()
     language = models.CharField(max_length=50)

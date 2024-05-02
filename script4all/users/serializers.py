@@ -16,3 +16,10 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    subscription_status = serializers.CharField(source='stripe_subscription_status')
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'subscription_status')

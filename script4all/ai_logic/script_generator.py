@@ -11,6 +11,7 @@ def generate_code(script_request):
     base_prompt = f"""
     Please analyze the following script request and identify the potential input variables.
     The ONLY possible input types are str, int, and float.
+    Carefully consider how to give the user inputs which will return an intelligent response. 
 
     Title: {script_request.title}
     Description: {script_request.description}
@@ -35,7 +36,7 @@ def generate_code(script_request):
         "Authorization": f"Bearer {API_KEY}"
     }
     data = {
-        "model": "gpt-3.5-turbo-0125",
+        "model": "gpt-4-turbo",
         "response_format": {"type": "json_object"},
         "messages": [
             {
@@ -121,6 +122,7 @@ def generate_code(script_request):
             content_str = response_dict['choices'][0]['message']['content']
             clean_code = ""
             if content_str.startswith("```python") and content_str.endswith("```"):
+                print("YAY")
                 clean_code = content_str[9:-3].strip()
             #generated_code = code_response.json()["code"]
     # Get the current working directory
@@ -148,6 +150,7 @@ def generate_code(script_request):
             # Write the clean code to the file
             with open(file_path, "w") as file:
                 file.write(clean_code)
+            return clean_code
             
             return improve_on_code_gtp4(clean_code, script_request.description, input_variables)
         else:
@@ -193,7 +196,8 @@ def improve_on_code_gtp4(code_string, description, input_variables):
     print(code_response.content)
     if code_response.status_code == 200:
             response_dict = json.loads(code_response.content.decode('utf-8'))
-            content_str = response_dict['choices'][0]['message']['content']
+            print(response_dict)
+            content_str = response_dict['content']
             clean_code = ""
             if content_str.startswith("```python") and content_str.endswith("```"):
                 clean_code = content_str[9:-3].strip()

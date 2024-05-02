@@ -13,7 +13,7 @@ function ScriptRequest() {
 
   return (
     <Container>
-      <Title>Script Request</Title>
+      <Title>New Script</Title>
       <CreateScriptForm />
     </Container>
   );

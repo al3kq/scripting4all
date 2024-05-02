@@ -25,7 +25,7 @@ function UserForm() {
       // Store the username in local storage
       localStorage.setItem('username', username);
       // Navigate to the user dashboard
-      navigate('/dashboard');
+      navigate('/');
     } catch (error) {
       console.error('Error:', error);
       setError('An error occurred during user registration. Please try again.');

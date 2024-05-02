@@ -170,6 +170,10 @@ export const NavItem = styled.li`
   }
 `;
 
+export const LogoutItem = styled.li`
+  margin-left: auto;
+`;
+
 export const NavLink = styled.a`
   color: #fff;
   text-decoration: none;

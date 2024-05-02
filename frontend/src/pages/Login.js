@@ -3,7 +3,7 @@ import api from '../api';
 import { useNavigate } from 'react-router-dom';  // Import useNavigate
 import { Container, Title, Form, FormGroup, Label, Input, Button } from '../styles';
 
-function Login() {
+function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();  // Initialize useNavigate
@@ -19,6 +19,7 @@ function Login() {
       localStorage.setItem('token', response.data.token)
       // Handle successful login (e.g., store token)
       // Redirect to dashboard
+      onLogin();
       navigate('/dashboard');  // Navigate to UserDashboard upon successful login
     } catch (error) {
       console.error('Error:', error);

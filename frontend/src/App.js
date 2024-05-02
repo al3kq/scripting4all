@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, Outlet } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -16,17 +16,45 @@ const PrivateRoute = () => {
   return token ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
+const isLoggedIn = () => {
+  const token = localStorage.getItem('token');
+  return token ? true : false;
+}
+
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if the token exists in local storage
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    // Remove the token from local storage
+    localStorage.removeItem('token');
+    // Update the isLoggedIn state to false
+    setIsLoggedIn(false);
+  };
   return (
     <Router>
       <div className="App">
-        <Header />
+        <Header isLoggedIn={isLoggedIn} onLogout={handleLogout}/>
         <main>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<UserManagement />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<Login onLogin={handleLogin}/>} />
             <Route path="/success" component={SuccessPage} />
             <Route path="/cancel" component={CancelPage} />
             {/* <Route path="/admin/users" element={<AdminUserManagement />} /> */}

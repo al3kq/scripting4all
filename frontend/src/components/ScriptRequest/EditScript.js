@@ -3,7 +3,7 @@ import api from '../../api';
 import { Form, FormGroup, Label, Input, Textarea, Button, SmallHeading } from '../../styles';
 import AutoResizingTextarea from './CodeBox';
 import { useParams } from 'react-router-dom';
-
+import LoadingIndicator from './LoadingIndicator';
 
 function EditScriptForm() {
   const [title, setTitle] = useState('');
@@ -11,6 +11,7 @@ function EditScriptForm() {
   const [codeBody, setCodeBody] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formValid, setFormValid] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { scriptId } = useParams();
 
   useEffect(() => {
@@ -22,22 +23,23 @@ function EditScriptForm() {
         });
         setTitle(response.data.script_request.title);
         setDescription(response.data.script_request.description);
-        setCodeBody(response.data.generated_script.code)
+        setCodeBody(response.data.generated_script.code);
       } catch (error) {
         console.error('Error fetching script:', error);
       }
     };
-
     fetchScriptData();
   }, [scriptId]);
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormSubmitted(true);
+    setLoading(true);
 
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found');
+      setLoading(false);
       return;
     }
 
@@ -56,6 +58,8 @@ function EditScriptForm() {
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error);
       setFormValid(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -81,17 +85,22 @@ function EditScriptForm() {
             required
           ></Textarea>
         </FormGroup>
-        <Button type="submit">Submit Script Request</Button>
+        <Button type="submit" disabled={loading}>
+          {loading ? 'Submitting...' : 'Submit Script Request'}
+        </Button>
       </Form>
-      {/* Ensure the code body FormGroup is part of the overall structure */}
+
+      {loading && <LoadingIndicator />}
+
+      {!loading && (
         <FormGroup>
           <SmallHeading>Code Body:</SmallHeading>
           <AutoResizingTextarea
             id="code"
             value={codeBody}
-            readOnly // Set as readOnly if it's not meant to be edited
           ></AutoResizingTextarea>
         </FormGroup>
+      )}
     </div>
   );
 }

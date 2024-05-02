@@ -9,9 +9,12 @@ def generate_code(script_request):
     API_KEY = os.getenv("OPENAI_API_KEY")
     # Define the base prompt
     base_prompt = f"""
-    Please analyze the following script request and identify the potential input variables.
+    Please analyze the following request and identify the potential input variables.
+    This user needs help writing Python code for a project! Think indepth what knowledge this question needs for a robust answer.
     The ONLY possible input types are str, int, and float.
-    Carefully consider how to give the user inputs which will return an intelligent response. 
+    Carefully consider how to give the user inputs which will return an intelligent response.
+    Non technical user. Use assumptions. Think logically of the most likely interpretation of the description.
+
 
     Title: {script_request.title}
     Description: {script_request.description}
@@ -70,6 +73,10 @@ def generate_code(script_request):
 
         # Generate code based on the script request and input variables
         code_prompt = f"""
+        Please analyze the following request and identify the potential input variables.
+        This user needs help writing Python code for a project! Think indepth what knowledge this question needs for a robust answer.
+        Non technical user. Use assumptions. Think logically of the most likely interpretation of the description.
+        Import packages as necessary. Do NOT need to pip install anything.
         Please generate ONLY Python code for the following script request:
 
         Title: {script_request.title}
@@ -82,19 +89,10 @@ def generate_code(script_request):
         - Use Python 3.x syntax
         - Follow PEP 8 style guide for code formatting
         - Include necessary error handling and input validation
-        - Provide meaningful variable names and code comments
 
         Code Template:
         ```python
-        def main({', '.join(f"{var['name']}: {var['type']}" for var in input_variables)}):
-            # Your code here
-            pass
-
-        if __name__ == "__main__":
-            # Get user input for each variable
-            {ui_scaffolding}
-
-            main({', '.join(var['name'] for var in input_variables)})
+            Your code here
         ```
         """
         headers = {
@@ -102,7 +100,7 @@ def generate_code(script_request):
             "Authorization": f"Bearer {API_KEY}"
         }
         data = {
-            "model": "gpt-3.5-turbo-0125",
+            "model": "gpt-4-turbo",
             # "response_format": {"type": "json_object"},
             "messages": [
                 {

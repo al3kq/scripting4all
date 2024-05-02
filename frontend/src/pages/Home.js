@@ -10,9 +10,7 @@ function Home() {
         </Paragraph>
         <Heading>Features</Heading>
         <List>
-          <ListItem>User Registration and Authentication</ListItem>
-          <ListItem>Script Request Submission</ListItem>
-          <ListItem>AI-powered Script Generation</ListItem>
+          <ListItem>AI-powered Python Script Generation</ListItem>
           <ListItem>Secure Script Execution</ListItem>
         </List>
         <Heading>Get Started</Heading>

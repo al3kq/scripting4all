@@ -126,9 +126,7 @@ function UserDashboard() {
         <Button onClick={handleSubscribe}>Subscribe</Button>
       ):
       (
-        <a href="https://buy.stripe.com/test_7sI3ey9W5enG556144" target="_blank" rel="noopener noreferrer">
-          <Button>Unsubscribe</Button>
-        </a>
+        <Button>Unsubscribe</Button>
       )}
       <Button onClick={handleCreateScriptClick}>Create Script</Button>
       <Heading>Your Script Requests:</Heading>

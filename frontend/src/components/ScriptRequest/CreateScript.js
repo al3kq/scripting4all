@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import api from '../../api';
 import { Form, FormGroup, Label, Input, Textarea, Button, SmallHeading } from '../../styles';
+import LoadingIndicator from './LoadingIndicator.js';
 import AutoResizingTextarea from './CodeBox';
+import { useNavigate } from 'react-router-dom';  // Import useNavigate
 
 function CreateScriptForm() {
   const [title, setTitle] = useState('');
@@ -9,14 +11,18 @@ function CreateScriptForm() {
   const [codeBody, setCodeBody] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formValid, setFormValid] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormSubmitted(true);
+    setLoading(true);
 
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found');
+      setLoading(false);
       return;
     }
 
@@ -32,9 +38,12 @@ function CreateScriptForm() {
       console.log(response.data);
       setFormValid(true);
       setCodeBody(response.data.generated_script.code);
+      navigate(`/edit-script/${response.data.script_request.id}`);
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error);
       setFormValid(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,9 +69,14 @@ function CreateScriptForm() {
             required
           ></Textarea>
         </FormGroup>
-        <Button type="submit">Submit Script Request</Button>
+        <Button type="submit" disabled={loading}>
+          {loading ? 'Submitting...' : 'Submit Script Request'}
+        </Button>
       </Form>
-      {/* Ensure the code body FormGroup is part of the overall structure */}
+
+      {loading && <LoadingIndicator>Loading...</LoadingIndicator>}
+
+      {!loading && formSubmitted && (
         <FormGroup>
           <SmallHeading>Code Body:</SmallHeading>
           <AutoResizingTextarea
@@ -71,6 +85,7 @@ function CreateScriptForm() {
             readOnly // Set as readOnly if it's not meant to be edited
           ></AutoResizingTextarea>
         </FormGroup>
+      )}
     </div>
   );
 }

@@ -38,6 +38,7 @@ function Login({ onLogin }) {
             id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            autocomplete="username"
             required
           />
         </FormGroup>
@@ -48,6 +49,7 @@ function Login({ onLogin }) {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autocomplete="current-password"
             required
           />
         </FormGroup>

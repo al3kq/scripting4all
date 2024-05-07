@@ -122,6 +122,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = 'staticfiles/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -133,7 +134,9 @@ AUTH_USER_MODEL = 'users.User'
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # The exact URL of your frontend
     'http://localhost:4242',
-    "https://buy.stripe.com",
+    'https://buy.stripe.com',
+    'http://104.236.8.173:4242',
+    'http://104.236.8.173:3000',
 ]
 
 # settings.py

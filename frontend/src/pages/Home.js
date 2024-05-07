@@ -15,8 +15,8 @@ function Home() {
         </List>
         <Heading>Get Started</Heading>
         <Paragraph>
-          To get started, please <Link href="/user-management">register</Link> for an account or{' '}
-          <Link href="/user-management">log in</Link> if you already have one.
+          To get started, please <Link href="/register">register</Link> for an account or{' '}
+          <Link href="/login">log in</Link> if you already have one.
         </Paragraph>
       </Container>
     );

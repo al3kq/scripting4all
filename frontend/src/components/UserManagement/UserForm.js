@@ -3,16 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../api';
 import { Form, FormGroup, Title, Container, Label, Input, Button, ErrorMessage } from '../../styles';
 
-function UserForm() {
+function UserForm({ onSignup }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (confirmPassword !== password) {
+      setConfirmPassword('');
+      setError('Passwords do not match');
+      return;
+    }
     try {
       const response = await api.post('/api/users/register/', {
         username,
@@ -25,6 +31,7 @@ function UserForm() {
       // Store the username in local storage
       localStorage.setItem('username', username);
       // Navigate to the user dashboard
+      onSignup();
       navigate('/');
     } catch (error) {
       console.error('Error:', error);
@@ -43,7 +50,7 @@ function UserForm() {
               type="text"
               id="username"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onInput={(e) => setUsername(e.target.value)}
               required
               />
           </FormGroup>
@@ -53,18 +60,30 @@ function UserForm() {
               type="email"
               id="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onInput={(e) => setEmail(e.target.value)}
               required
               />
           </FormGroup>
           <FormGroup>
-              <Label htmlFor="password">Password:</Label>
+              <Label htmlFor="new-password">Password:</Label>
               <Input
               type="password"
-              id="password"
+              id="new-password-text-field"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onInput={(e) => setPassword(e.target.value)}
               required
+              autoComplete="new-password"
+              />
+          </FormGroup>
+          <FormGroup>
+              <Label htmlFor="new-password">Confirm Password:</Label>
+              <Input
+              type="password"
+              id="confirm-password-text-field"
+              value={confirmPassword}
+              onInput={(e) => setConfirmPassword(e.target.value)}
+              required
+              autoComplete="new-password"
               />
           </FormGroup>
           <Button type="submit">Register</Button>

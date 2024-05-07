@@ -53,11 +53,10 @@ function App() {
         <main>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/register" element={<UserManagement />} />
+            <Route path="/register" element={<UserManagement onSignup={handleLogin}/>} />
             <Route path="/login" element={<Login onLogin={handleLogin}/>} />
             <Route path="/success" component={SuccessPage} />
             <Route path="/cancel" component={CancelPage} />
-            {/* <Route path="/admin/users" element={<AdminUserManagement />} /> */}
             <Route path="/script-request" element={<PrivateRoute />}>
               <Route path="" element={<ScriptRequest />} />
             </Route>

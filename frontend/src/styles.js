@@ -107,7 +107,15 @@ export const Input = styled.input`
   border-radius: 4px;
   border: 1px solid #ccc;
 `;
-
+export const PasswordInput = styled.input`
+  minlength: 20;
+  required: lower;
+  required: upper
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+`;
 export const Button = styled.button`
   padding: 10px 20px;
   font-size: 16px;

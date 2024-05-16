@@ -232,17 +232,17 @@ def improve_on_code_gtp4(code_string, description, input_variables):
 
 
     
-def generate_ui_scaffolding(input_variables):
-    ui_scaffolding = ""
+# def generate_ui_scaffolding(input_variables):
+#     ui_scaffolding = ""
 
-    for variable in input_variables:
-        ui_scaffolding += f"{variable["name"]}: {variable["type"]} \n"
-        # if variable["type"] == "str":
-        #     ui_scaffolding += f'{variable["name"]} = input("Enter {variable["description"]}: ")\n'
-        # elif variable["type"] == "int":
-        #     ui_scaffolding += f'{variable["name"]} = int(input("Enter {variable["description"]}: "))\n'
-        # elif variable["type"] == "float":
-        #     ui_scaffolding += f'{variable["name"]} = float(input("Enter {variable["description"]}: "))\n'
-        # Add more cases for different data types as needed
-    print(ui_scaffolding)
-    return ui_scaffolding
+#     for variable in input_variables:
+#         ui_scaffolding += f"{variable["name"]}: {variable["type"]} \n"
+#         # if variable["type"] == "str":
+#         #     ui_scaffolding += f'{variable["name"]} = input("Enter {variable["description"]}: ")\n'
+#         # elif variable["type"] == "int":
+#         #     ui_scaffolding += f'{variable["name"]} = int(input("Enter {variable["description"]}: "))\n'
+#         # elif variable["type"] == "float":
+#         #     ui_scaffolding += f'{variable["name"]} = float(input("Enter {variable["description"]}: "))\n'
+#         # Add more cases for different data types as needed
+#     print(ui_scaffolding)
+#     return ui_scaffolding

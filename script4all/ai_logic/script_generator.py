@@ -69,7 +69,7 @@ def generate_code(script_request):
         input_variables = content_data["input_variables"]
 
         # Generate UI scaffolding based on input variables
-        ui_scaffolding = generate_ui_scaffolding(input_variables)
+        # ui_scaffolding = generate_ui_scaffolding(input_variables)
 
         # Generate code based on the script request and input variables
         code_prompt = f"""

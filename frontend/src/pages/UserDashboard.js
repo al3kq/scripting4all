@@ -129,13 +129,13 @@ function UserDashboard() {
         <Button>Unsubscribe</Button>
       )}
       <Button onClick={handleCreateScriptClick}>Create Script</Button>
-      <Heading>Your Script Requests:</Heading>
+      <Heading>Your Websites:</Heading>
       {isLoading ? (
         <Paragraph>Loading...</Paragraph>
       ) : error ? (
         <Paragraph>Error: {error}</Paragraph>
       ) : scripts.length === 0 ? (
-        <Paragraph>No scripts found.</Paragraph>
+        <Paragraph>No websites found.</Paragraph>
       ) : (
         <ScriptList>
           {sortedScripts.map(script => (

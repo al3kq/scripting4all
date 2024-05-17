@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import ScriptRequest, GeneratedScript
 from .serializers import ScriptRequestSerializer, GeneratedScriptSerializer
-from ai_logic.script_generator import generate_code
+from ai_logic.website_generator import generate_code
 # from ai_logic.execute_script import execute_code
 
 class ScriptRequestCreateView(generics.CreateAPIView):
@@ -19,6 +19,7 @@ class ScriptRequestCreateView(generics.CreateAPIView):
         script_request = self.perform_create(serializer)
 
         generated_code = generate_code(script_request)
+        print(generated_code)
         generated_script = GeneratedScript.objects.create(
             script_request=script_request,
             code=generated_code,

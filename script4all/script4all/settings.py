@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
+    '104.236.8.173',
+    'thedeygroup',
 ]
 
 
@@ -139,6 +141,24 @@ CORS_ALLOWED_ORIGINS = [
     'https://buy.stripe.com',
     'http://104.236.8.173:4242',
     'http://104.236.8.173:3000',
+    'http://104.236.8.173:80',
+    'http://localhost:80',
+    'http://thedeygroup.com',
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
+]
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'DELETE',
+    'OPTIONS',
 ]
 
 # settings.py

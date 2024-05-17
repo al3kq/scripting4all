@@ -5,7 +5,7 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import api from '../../api';
 
 const Scripts = ({ script, onOpen, onDelete }) => {
-  const formattedDate = new Date(script.created_at).toLocaleString('en-US', {
+  const formattedDate = new Date(script.updated_at).toLocaleString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -15,9 +15,9 @@ const Scripts = ({ script, onOpen, onDelete }) => {
   });
   // Prevent the onOpen event from firing when the delete button is clicked
 
-  const formattedDescription = script.description
-  if (script.length > 60) {
-    formattedDescription = formattedDescription.substring(0,60)+"..."
+  let formattedDescription = script.description
+  if (formattedDescription.length > 100) {
+    formattedDescription = formattedDescription.substring(0,100)+"..."
   }
 
   return (

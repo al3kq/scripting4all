@@ -16,7 +16,7 @@ function Header({ isLoggedIn, onLogout }) {
                 <NavLink href="/dashboard">Dashboard</NavLink>
               </NavItem>
                 <NavItem>
-                <NavLink href="/script-request">Script Request</NavLink>
+                <NavLink href="/script-request">Build a new Site</NavLink>
               </NavItem>
             </NavList>
             <LogoutItem>

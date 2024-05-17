@@ -4,7 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import ScriptRequest, GeneratedScript
 from .serializers import ScriptRequestSerializer, GeneratedScriptSerializer
-from ai_logic.script_generator import generate_code
+from ai_logic.website_generator import generate_code
+from django.db import models
 # from ai_logic.execute_script import execute_code
 
 class ScriptRequestCreateView(generics.CreateAPIView):
@@ -19,6 +20,7 @@ class ScriptRequestCreateView(generics.CreateAPIView):
         script_request = self.perform_create(serializer)
 
         generated_code = generate_code(script_request)
+        print(generated_code)
         generated_script = GeneratedScript.objects.create(
             script_request=script_request,
             code=generated_code,
@@ -85,12 +87,13 @@ class ScriptRequestDetailView(generics.RetrieveUpdateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
+        instance.refresh_from_db()
+
         # After updating the script request, regenerate the code
         generated_script = GeneratedScript.objects.filter(script_request=instance).first()
         if generated_script:
             # You might want to pass new parameters or modify how generate_code is called based on updated script request
             new_code = generate_code(instance)
-            print(new_code)
             generated_script.code = new_code
             generated_script.save()
 

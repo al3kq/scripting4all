@@ -15,7 +15,7 @@ function ScriptEdit() {
 
   return (
     <Container>
-      <Title>Edit Script</Title>
+      <Title>Edit Site</Title>
       <EditScriptForm scriptId={scriptId}/>
     </Container>
   );

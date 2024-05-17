@@ -109,7 +109,7 @@ function UserDashboard() {
 
   const sortedScripts = scripts.sort((a, b) => {
     // Convert date strings to date objects for comparison
-    return new Date(b.created_at) - new Date(a.created_at); // Sort descending
+    return new Date(b.updated_at) - new Date(a.updated_at); // Sort descending
     // Use new Date(a.created_at) - new Date(b.created_at) to sort ascending
   });
 
@@ -119,7 +119,7 @@ function UserDashboard() {
 
   return (
     <Container>
-      <Title>User Dashboard</Title>
+      <Title>My sites</Title>
       <Paragraph>Welcome, {username}!</Paragraph>
       <Paragraph>Subscription Status: {subscriptionStatus}</Paragraph>
       {subscriptionStatus !== 'active' ? (
@@ -129,13 +129,13 @@ function UserDashboard() {
         <Button>Unsubscribe</Button>
       )}
       <Button onClick={handleCreateScriptClick}>Create Script</Button>
-      <Heading>Your Script Requests:</Heading>
+      <Heading>Your Websites:</Heading>
       {isLoading ? (
         <Paragraph>Loading...</Paragraph>
       ) : error ? (
         <Paragraph>Error: {error}</Paragraph>
       ) : scripts.length === 0 ? (
-        <Paragraph>No scripts found.</Paragraph>
+        <Paragraph>No websites found.</Paragraph>
       ) : (
         <ScriptList>
           {sortedScripts.map(script => (

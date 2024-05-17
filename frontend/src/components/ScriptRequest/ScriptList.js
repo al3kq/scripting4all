@@ -5,7 +5,7 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import api from '../../api';
 
 const Scripts = ({ script, onOpen, onDelete }) => {
-  const formattedDate = new Date(script.created_at).toLocaleString('en-US', {
+  const formattedDate = new Date(script.updated_at).toLocaleString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

@@ -7,7 +7,7 @@ import datetime
 def generate_index_html(description):
     load_dotenv()
     API_KEY = os.getenv("OPENAI_API_KEY")
-    system_prompt = "You are an AI that generates HTML code based on a provided description. Output only the HTML code. The result will be ran directly, no description or text. No Logos, links, or images. ONLY HTML here NO Javascript"
+    system_prompt = "You are an AI that generates HTML code based on a provided description. Output only the HTML code, a style.css and script.js will also be made. The result will be ran directly, no description or text. No Logos, links, or images. ONLY HTML here NO Javascript"
     user_prompt = f"Generate the HTML code for the following description:\n{description}"
     api_url = "https://api.openai.com/v1/chat/completions"
     headers = {
@@ -257,6 +257,7 @@ def generate_code(script_request):
     Description: Outline the color scheme, typography choices, and any specific design preferences mentioned by the user. 
     Describe the layout style, including any grid systems or responsive design elements.
     Detail the styling for different HTML elements and sections, such as buttons, headings, paragraphs, etc.
+    If the style is not specified go for a modern look.
 
     script.js:
     Description: Describe the expected functionality and interactivity, such as form validations, animations, event handling, etc. Provide details on how the user will interact with the website, including any dynamic content or interactive features.
@@ -328,13 +329,9 @@ def generate_code(script_request):
                 script_code = generate_script_js(description)
             else:
                 continue
+        print(html_code)
         response = {"index.html": html_code, "style.css": style_code, "script.js": script_code}
         response_copy = response.copy()
-        for key in response:
-            main_file_content = response[key]
-            other_files = {k: v for k, v in response.items() if k != key}
-            print(key)
-            response[key] = bring_it_togther(main_file_content, other_files)
         # response_str = str(response)
         # response_str = bring_it_togther(response_str)
         # # print(response_str)
@@ -343,7 +340,6 @@ def generate_code(script_request):
         print(suggestions_str)
         try:
             suggestions_dict = eval(suggestions_str)
-            print(suggestions_dict)
             index_suggestions = suggestions_dict['output_files'][0]['Suggestions']
             script_suggestions = suggestions_dict['output_files'][1]['Suggestions']
             response["index.html"] = iterate(response["index.html"], index_suggestions)
@@ -352,7 +348,13 @@ def generate_code(script_request):
             print("BAD")
             print(e)
             return json.dumps(response)
-
+        print(response["index.html"])
+        for key in response:
+            main_file_content = response[key]
+            other_files = {k: v for k, v in response.items() if k != key}
+            print(key)
+            response[key] = bring_it_togther(main_file_content, other_files)
+        print(response["index.html"])
         return json.dumps(response)
 
         content_data = json.loads(response)

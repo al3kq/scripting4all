@@ -155,7 +155,7 @@ function EditScriptForm() {
           ></Textarea>
         </FormGroup>
         <Button type="submit" disabled={loading}>
-          {loading ? 'Submitting...' : 'Submit Script Request'}
+          {loading ? 'Submitting...This may take a few minutes' : 'Submit Script Request'}
         </Button>
       </Form>
 

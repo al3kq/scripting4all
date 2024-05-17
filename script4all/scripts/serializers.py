@@ -13,4 +13,4 @@ class ScriptRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScriptRequest
         fields = ('id', 'user', 'title', 'description', 'status', 'created_at', 'updated_at', 'generated_script')
-        read_only_fields = ('user', 'status', 'created_at', 'updated_at', 'generated_script')
+        read_only_fields = ('user', 'status', 'created_at', 'generated_script')

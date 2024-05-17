@@ -1,5 +1,6 @@
 import React from 'react';
-import ScriptRequestForm from '../components/ScriptRequest/ScriptRequestForm';
+import CreateScriptForm from '../components/ScriptRequest/CreateScript';
+import {ScriptList, Paragraph, Container, Title, Button, Heading } from '../styles'; // Ensure imports are correct
 
 function ScriptRequest() {
   // TODO: Check if the user is logged in
@@ -11,10 +12,10 @@ function ScriptRequest() {
   }
 
   return (
-    <div>
-      <h1>Script Request</h1>
-      <ScriptRequestForm />
-    </div>
+    <Container>
+      <Title>New Site</Title>
+      <CreateScriptForm />
+    </Container>
   );
 }
 

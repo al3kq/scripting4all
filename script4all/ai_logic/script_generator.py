@@ -9,8 +9,12 @@ def generate_code(script_request):
     API_KEY = os.getenv("OPENAI_API_KEY")
     # Define the base prompt
     base_prompt = f"""
-    Please analyze the following script request and identify the potential input variables.
+    Please analyze the following request and identify the potential input variables.
+    This user needs help writing Python code for a project! Think indepth what knowledge this question needs for a robust answer.
     The ONLY possible input types are str, int, and float.
+    Carefully consider how to give the user inputs which will return an intelligent response.
+    Non technical user. Use assumptions. Think logically of the most likely interpretation of the description.
+
 
     Title: {script_request.title}
     Description: {script_request.description}
@@ -35,7 +39,7 @@ def generate_code(script_request):
         "Authorization": f"Bearer {API_KEY}"
     }
     data = {
-        "model": "gpt-3.5-turbo-0125",
+        "model": "gpt-4-turbo",
         "response_format": {"type": "json_object"},
         "messages": [
             {
@@ -65,10 +69,14 @@ def generate_code(script_request):
         input_variables = content_data["input_variables"]
 
         # Generate UI scaffolding based on input variables
-        ui_scaffolding = generate_ui_scaffolding(input_variables)
+        # ui_scaffolding = generate_ui_scaffolding(input_variables)
 
         # Generate code based on the script request and input variables
         code_prompt = f"""
+        Please analyze the following request and identify the potential input variables.
+        This user needs help writing Python code for a project! Think indepth what knowledge this question needs for a robust answer.
+        Non technical user. Use assumptions. Think logically of the most likely interpretation of the description.
+        Import packages as necessary. Do NOT need to pip install anything.
         Please generate ONLY Python code for the following script request:
 
         Title: {script_request.title}
@@ -81,19 +89,10 @@ def generate_code(script_request):
         - Use Python 3.x syntax
         - Follow PEP 8 style guide for code formatting
         - Include necessary error handling and input validation
-        - Provide meaningful variable names and code comments
 
         Code Template:
         ```python
-        def main({', '.join(f"{var['name']}: {var['type']}" for var in input_variables)}):
-            # Your code here
-            pass
-
-        if __name__ == "__main__":
-            # Get user input for each variable
-            {ui_scaffolding}
-
-            main({', '.join(var['name'] for var in input_variables)})
+            Your code here
         ```
         """
         headers = {
@@ -101,7 +100,7 @@ def generate_code(script_request):
             "Authorization": f"Bearer {API_KEY}"
         }
         data = {
-            "model": "gpt-3.5-turbo-0125",
+            "model": "gpt-4-turbo",
             # "response_format": {"type": "json_object"},
             "messages": [
                 {
@@ -121,6 +120,7 @@ def generate_code(script_request):
             content_str = response_dict['choices'][0]['message']['content']
             clean_code = ""
             if content_str.startswith("```python") and content_str.endswith("```"):
+                print("YAY")
                 clean_code = content_str[9:-3].strip()
             #generated_code = code_response.json()["code"]
     # Get the current working directory
@@ -148,6 +148,7 @@ def generate_code(script_request):
             # Write the clean code to the file
             with open(file_path, "w") as file:
                 file.write(clean_code)
+            return clean_code
             
             return improve_on_code_gtp4(clean_code, script_request.description, input_variables)
         else:
@@ -193,7 +194,8 @@ def improve_on_code_gtp4(code_string, description, input_variables):
     print(code_response.content)
     if code_response.status_code == 200:
             response_dict = json.loads(code_response.content.decode('utf-8'))
-            content_str = response_dict['choices'][0]['message']['content']
+            print(response_dict)
+            content_str = response_dict['content']
             clean_code = ""
             if content_str.startswith("```python") and content_str.endswith("```"):
                 clean_code = content_str[9:-3].strip()
@@ -230,17 +232,17 @@ def improve_on_code_gtp4(code_string, description, input_variables):
 
 
     
-def generate_ui_scaffolding(input_variables):
-    ui_scaffolding = ""
+# def generate_ui_scaffolding(input_variables):
+#     ui_scaffolding = ""
 
-    for variable in input_variables:
-        ui_scaffolding += f"{variable["name"]}: {variable["type"]} \n"
-        # if variable["type"] == "str":
-        #     ui_scaffolding += f'{variable["name"]} = input("Enter {variable["description"]}: ")\n'
-        # elif variable["type"] == "int":
-        #     ui_scaffolding += f'{variable["name"]} = int(input("Enter {variable["description"]}: "))\n'
-        # elif variable["type"] == "float":
-        #     ui_scaffolding += f'{variable["name"]} = float(input("Enter {variable["description"]}: "))\n'
-        # Add more cases for different data types as needed
-    print(ui_scaffolding)
-    return ui_scaffolding
+#     for variable in input_variables:
+#         ui_scaffolding += f"{variable["name"]}: {variable["type"]} \n"
+#         # if variable["type"] == "str":
+#         #     ui_scaffolding += f'{variable["name"]} = input("Enter {variable["description"]}: ")\n'
+#         # elif variable["type"] == "int":
+#         #     ui_scaffolding += f'{variable["name"]} = int(input("Enter {variable["description"]}: "))\n'
+#         # elif variable["type"] == "float":
+#         #     ui_scaffolding += f'{variable["name"]} = float(input("Enter {variable["description"]}: "))\n'
+#         # Add more cases for different data types as needed
+#     print(ui_scaffolding)
+#     return ui_scaffolding

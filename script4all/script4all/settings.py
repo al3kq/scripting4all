@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-=m94+ny@-8_9zs#nq&4yqh$kzzzt3rij^i%y1i_o+$id91t(7v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+]
 
 
 # Application definition
@@ -122,6 +124,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = 'staticfiles/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -132,5 +135,14 @@ AUTH_USER_MODEL = 'users.User'
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # The exact URL of your frontend
+    'http://localhost:4242',
+    'https://buy.stripe.com',
+    'http://104.236.8.173:4242',
+    'http://104.236.8.173:3000',
 ]
 
+# settings.py
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51PBmJ2ETTXwHh2RAKSuQQNxe8A22g5FmrDJPB4Kg2jqIkZ65j2eJWMtpEOQZ9cur9FPPOFJ2dVsIlWcO7EMU4BS000AtfVGov2'
+STRIPE_SECRET_KEY = 'sk_test_51PBmJ2ETTXwHh2RAVvkxxTSY7gyMNqD2TEzjlZMy9WSdGv7qOVa7xQwcjrWh877ldo7OoyKb3r9cZyeOFsXuWKCh00aJhGflOd'
+STRIPE_WEBHOOK_SECRET = 'whsec_5c683674f013eeea61c3970379a705deb834a717c4555f215189fdd6a7fc95fd'
+APPEND_SLASH=True

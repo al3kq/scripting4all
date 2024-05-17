@@ -2,9 +2,9 @@ import React from 'react';
 import UserForm from '../components/UserManagement/UserForm';
 import UserList from '../components/UserManagement/UserList';
 
-function UserManagement() {
+function UserManagement({ onSignup }) {
   return (
-      <UserForm />
+      <UserForm onSignup={onSignup}/>
   );
 }
 

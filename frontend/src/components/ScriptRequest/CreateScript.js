@@ -1,22 +1,28 @@
 import React, { useState } from 'react';
 import api from '../../api';
-import { Form, FormGroup, Label, Input, Textarea, Button } from '../../styles';
+import { Form, FormGroup, Label, Input, Textarea, Button, SmallHeading } from '../../styles';
+import LoadingIndicator from './LoadingIndicator.js';
+import AutoResizingTextarea from './CodeBox';
+import { useNavigate } from 'react-router-dom';  // Import useNavigate
 
-function ScriptRequestForm() {
+function CreateScriptForm() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [inputValues, setInputValues] = useState('');
   const [codeBody, setCodeBody] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formValid, setFormValid] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormSubmitted(true);
+    setLoading(true);
 
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found');
+      setLoading(false);
       return;
     }
 
@@ -26,32 +32,18 @@ function ScriptRequestForm() {
         description,
       }, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Token ${token}`,
+        },
       });
       console.log(response.data);
       setFormValid(true);
+      setCodeBody(response.data.generated_script.code);
+      navigate(`/edit-script/${response.data.script_request.id}`);
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error);
       setFormValid(false);
-    }
-  };
-
-  const fetchInputValues = async () => {
-    try {
-      const response = await api.get('/api/scripts/input-values/');
-      setInputValues(response.data);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
-  const fetchCodeBody = async () => {
-    try {
-      const response = await api.get('/api/scripts/code-body/');
-      setCodeBody(response.data);
-    } catch (error) {
-      console.error('Error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -77,38 +69,25 @@ function ScriptRequestForm() {
             required
           ></Textarea>
         </FormGroup>
-        <Button type="submit">Submit Script Request</Button>
+        <Button type="submit" disabled={loading}>
+          {loading ? 'Submitting...This may take a few minutes' : 'Submit Script Request'}
+        </Button>
       </Form>
 
-      {formSubmitted && (
-        <div>
-          {formValid ? (
-            <div>
-              <p>Form submitted successfully!</p>
-              <Button onClick={fetchInputValues}>Get Input Values</Button>
-              <Button onClick={fetchCodeBody}>Get Code Body</Button>
-            </div>
-          ) : (
-            <p>Form submission failed. Please try again.</p>
-          )}
-        </div>
-      )}
+      {loading && <LoadingIndicator>Loading...</LoadingIndicator>}
 
-      {inputValues && (
-        <div>
-          <h3>Input Values:</h3>
-          <p>{inputValues}</p>
-        </div>
-      )}
-
-      {codeBody && (
-        <div>
-          <h3>Code Body:</h3>
-          <pre>{codeBody}</pre>
-        </div>
+      {!loading && formSubmitted && (
+        <FormGroup>
+          <SmallHeading>Code Body:</SmallHeading>
+          <AutoResizingTextarea
+            id="code"
+            value={codeBody}
+            readOnly // Set as readOnly if it's not meant to be edited
+          ></AutoResizingTextarea>
+        </FormGroup>
       )}
     </div>
   );
 }
 
-export default ScriptRequestForm;
+export default CreateScriptForm;

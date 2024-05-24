@@ -33,7 +33,7 @@ def generate_index_html(description):
         return response_dict['choices'][0]['message']['content']
     return ""
 
-def generate_styles_css(description):
+def generate_style_css(description):
     load_dotenv()
     API_KEY = os.getenv("OPENAI_API_KEY")
     system_prompt = "You are an AI that generates CSS code based on a provided description. Output only the CSS code. The result will be ran directly, no description or text."
@@ -68,8 +68,8 @@ def generate_script_js(description):
         return ""
     load_dotenv()
     API_KEY = os.getenv("OPENAI_API_KEY")
-    system_prompt = "You are an AI that generates JavaScript code based on a provided description. ONLY output JavaScript code."
-    user_prompt = f"Generate the JavaScript code for the following description:\n{description}"
+    system_prompt = "###Instruction### Your task is to generate JavaScript code based on a provided description. You MUST output ONLY JavaScript code."
+    user_prompt = f"###Question### Generate the JavaScript code for the following description:\n{description}"
     api_url = "https://api.openai.com/v1/chat/completions"
     headers = {
         "Content-Type": "application/json",
@@ -94,12 +94,17 @@ def generate_script_js(description):
         return response_dict['choices'][0]['message']['content']
     return ""
 
-def bring_it_togther(fix_file, all_code):
+def bring_it_together(fix_file, all_code,description):
     load_dotenv()
     API_KEY = os.getenv("OPENAI_API_KEY")
-    system_prompt = """You are an AI that edits code and ensures it all works together. Look at the following code and ONLY make edits to the fix_file. No descriptions.
-    Make sure the logic of the 3 files works together and this code will run correctly. Do Not output anything but the exact input format of edited code. No Logos, links, or images."""
-    user_prompt = f"Ensure my code all works well together:\nAll Code: {all_code}\nFix File: {fix_file}"
+    system_prompt = """You are an AI that edits code to ensure compatibility and correctness. Follow these instructions:
+    1. Only make necessary edits to the provided fix_file.
+    2. Ensure the logic of all three files works together and the code runs correctly.
+    3. Output only the edited code in the exact input format, without any additional descriptions, logos, links, or images.
+    4. Take the generated description into account to ensure the code is meeting all needs.
+    5. Only the edited Fix File should be outputted, this will keep all html, css, js separate."""
+
+    user_prompt = f"Ensure my code all works well together:\nDescription: {description}\nAll Code: {all_code}\nFix File: {fix_file}"
     api_url = "https://api.openai.com/v1/chat/completions"
     headers = {
         "Content-Type": "application/json",
@@ -127,8 +132,8 @@ def bring_it_togther(fix_file, all_code):
 def logic_check(index_code, script_code):
     load_dotenv()
     API_KEY = os.getenv("OPENAI_API_KEY")
-    system_prompt = f"""You are an AI that ensures code can be used and is logically correct. Take a look at the index.html and script.js given.
-    Suggest ONLY necessary edits to improve the user experience and fix bugs. We don't care about how the code looks or comments. No Logos, links, or images.
+    system_prompt = f"""You are an AI that ensures code can be used and is logically correct. Review the provided index.html and script.js files. Suggest ONLY necessary edits to improve user experience and fix bugs. Focus on functionality, not appearance or comments. No logos, links, or images.
+    Your suggestions are ONLY text descriptions, never code.
     Output Format:
     Your output should be structured as follows:
 
@@ -166,7 +171,7 @@ def logic_check(index_code, script_code):
         "Authorization": f"Bearer {API_KEY}"
     }
     data = {
-        "model": "gpt-4-turbo",
+        "model": "gpt-4o",
         "response_format": {"type": "json_object"},
         "messages": [
             {
@@ -187,14 +192,16 @@ def logic_check(index_code, script_code):
         return response_dict['choices'][0]['message']['content']
     return ""
 
-def iterate(code, suggestions):
+def iterate(code, suggestions, other_file):
     load_dotenv()
     API_KEY = os.getenv("OPENAI_API_KEY")
-    system_prompt = """You are an AI that edits code and ensures it all works together. Look at the following code and ONLY make edits. No descriptions.
-    Consider and implement the suggestions given to you.
-    Make sure the logic file works and this code will run correctly. Do Not output anything but the exact input format of edited code.
+    system_prompt = """You are an AI that edits code to ensure compatibility and correctness. The other file is included to ensure logic works together. DO NOT edit Other_File Follow these instructions:
+    1. Only make necessary edits to the code provided.
+    2. Implement all given suggestions.
+    3. Ensure the logic file works and the code runs correctly.
+    4. Output only the edited code in the exact input format, without any additional descriptions.
     """
-    user_prompt = f"Help me fix my code:\nCode: {code}\nSuggestions: {suggestions}"
+    user_prompt = f"Help me fix my code:\nEdit_Code: {code}\nSuggestions: {suggestions}\nOther_File: {other_file}"
     api_url = "https://api.openai.com/v1/chat/completions"
     headers = {
         "Content-Type": "application/json",
@@ -224,64 +231,55 @@ def generate_code(script_request):
     API_KEY = os.getenv("OPENAI_API_KEY")
     # Define the base prompt
     base_prompt = f"""
-    You are an advanced AI system tasked with generating a basic single page website structure based on user input. The user will provide a detailed description of the website they want to create. Your job is to use this description to generate detailed assumptions and descriptions for the three main files of a website: index.html, styles.css, and script.js.
-    NO IMAGES OR LINKS all single page.
-    User Input:
-    The user will provide a detailed description including:
+###Instruction### Your task is to generate and ensure a cohesive single-page website structure based on user input. The user will provide a detailed description of the website they want to create. You MUST generate detailed assumptions and descriptions for the three main files of a website: index.html, style.css, and script.js. No images or links, all single-page.
 
-    The purpose of the website (e.g., personal blog, e-commerce, portfolio).
-    The target audience (e.g., young professionals, students, hobbyists).
-    Main features and sections (e.g., homepage, about page, contact form, product listings).
-    Any specific design preferences (e.g., color scheme, layout style).
-    Your Task:
+###Example### User Input:
+The user will provide a detailed description including:
+- The purpose of the website (e.g., personal blog, e-commerce, portfolio).
+- The target audience (e.g., young professionals, students, hobbyists).
+- Main features and sections (e.g., homepage, about page, contact form, product listings).
+- Any specific design preferences (e.g., color scheme, layout style).
 
-    Analyze the User Description: Understand the overall purpose, target audience, main features, and design preferences of the website.
-    Generate Detailed Assumptions and Descriptions: Based on the user's input, provide a detailed description and assumptions for each of the three main files:
-    index.html: Describe the structure and main sections of the HTML file.
-    styles.css: Describe the design elements, including color schemes, typography, and layout styles.
-    script.js: Describe the functionality and interactivity that will be included in the JavaScript file. If the website does not require a script.js just output BLANK STRING
-            This description should go in depth on the nuances of complex reasoning if necessary. Think carefully though step by step.
-    Output Format:
-    Your output should be structured as follows:
+###Instruction### Your task:
+1. Analyze the User Description: Understand the overall purpose, target audience, main features, and design preferences of the website.
+2. Generate Detailed Assumptions and Descriptions: Based on the user's input, provide a detailed description and assumptions for each of the three main files:
+    - index.html: Describe the structure and main sections of the HTML file. Ensure all necessary elements are included, such as dynamically generated grids and keyboards.
+    - style.css: Describe the design elements, including color schemes, typography, and layout styles. Ensure all referenced class names and styles are defined.
+    - script.js: Describe the functionality and interactivity that will be included in the JavaScript file. Ensure that all necessary elements are dynamically generated and that all functionality, such as keyboard input and game reset, is implemented. If the website does not require a script.js, output a blank string. Provide in-depth details on the nuances of complex reasoning if necessary.
 
-    User Description Analysis:
-    Title: {script_request.title}
-    Description: {script_request.description}
+###Example### Output Format:
+Your output should be structured as follows:
 
-    Detailed Assumptions and Descriptions:
+User Description Analysis:
+- Title: {script_request.title}
+- Description: {script_request.description}
 
-    index.html:
-    Description: Describe the HTML structure, including the main sections such as header, footer, main content areas, navigation menus, etc.
+Detailed Assumptions and Descriptions:
+- index.html:
+  Description: Describe the HTML structure, including the main sections such as header, footer, main content areas, navigation menus, etc. Ensure that necessary elements such as the word grid and virtual keyboard are dynamically generated.
+- style.css:
+  Description: Outline the color scheme, typography choices, and any specific design preferences mentioned by the user. Describe the layout style, including any grid systems or responsive design elements. Detail the styling for different HTML elements and sections, such as buttons, headings, paragraphs, etc. If the style is not specified, go for a modern look. Ensure all class names referenced in script.js are defined.
+- script.js:
+  Description: Describe the expected functionality and interactivity, such as form validations, animations, event handling, etc. Provide details on how the user will interact with the website, including any dynamic content or interactive features. Ensure all referenced class names and functionality, such as dynamic generation of elements and game reset, are implemented.
 
-    styles.css:
-    Description: Outline the color scheme, typography choices, and any specific design preferences mentioned by the user. 
-    Describe the layout style, including any grid systems or responsive design elements.
-    Detail the styling for different HTML elements and sections, such as buttons, headings, paragraphs, etc.
-    If the style is not specified go for a modern look.
-
-    script.js:
-    Description: Describe the expected functionality and interactivity, such as form validations, animations, event handling, etc. Provide details on how the user will interact with the website, including any dynamic content or interactive features.
-
-
-
-    Provide ONLY a JSON object with the following structure. Do not include any other fields.:
-    {{
-        "output_files": [
-            {{
-                "file_name": "index.html",
-                "description": "<file_description>"
-            }},
-            {{
-                "file_name": "styles.css",
-                "description": "<file_description>"
-            }},
-            {{
-                "file_name": "script.js",
-                "description": "file_description>"
-            }},
-        ]
-    }}
-    """
+Provide ONLY a JSON object with the following structure. Do not include any other fields:
+{{
+    "output_files": [
+        {{
+            "file_name": "index.html",
+            "description": "<file_description>"
+        }},
+        {{
+            "file_name": "style.css",
+            "description": "<file_description>"
+        }},
+        {{
+            "file_name": "script.js",
+            "description": "<file_description>"
+        }}
+    ]
+}}
+"""
 
     # Make API call to identify input variables
     api_url = "https://api.openai.com/v1/chat/completions"
@@ -300,7 +298,9 @@ def generate_code(script_request):
             {
                 "role": "user",
                 "content": f"""
-                    Be specific, make assumptions, only output json.
+                    User Description Analysis:
+                        - Title: {script_request.title}
+                        - Description: {script_request.description}
                     """
             }
         ]
@@ -323,13 +323,20 @@ def generate_code(script_request):
             
             if file_name == "index.html":
                 html_code = generate_index_html(description)
-            elif file_name == "styles.css":
-                style_code = generate_styles_css(description)
+            elif file_name == "style.css":
+                style_code = generate_style_css(description)
             elif file_name == "script.js":
                 script_code = generate_script_js(description)
             else:
                 continue
-        print(html_code)
+        output_dir = 'temp_output'
+        os.makedirs(output_dir, exist_ok=True)
+        with open(os.path.join(output_dir, "index1.html"), 'w') as file:
+            file.write(html_code)
+        with open(os.path.join(output_dir, "style1.css"), 'w') as file:
+            file.write(style_code)
+        with open(os.path.join(output_dir, "script1.js"), 'w') as file:
+            file.write(script_code)
         response = {"index.html": html_code, "style.css": style_code, "script.js": script_code}
         response_copy = response.copy()
         # response_str = str(response)
@@ -340,21 +347,42 @@ def generate_code(script_request):
         print(suggestions_str)
         try:
             suggestions_dict = eval(suggestions_str)
-            index_suggestions = suggestions_dict['output_files'][0]['Suggestions']
-            script_suggestions = suggestions_dict['output_files'][1]['Suggestions']
-            response["index.html"] = iterate(response["index.html"], index_suggestions)
-            response["script.js"] = iterate(response["script.js"], script_suggestions)
+            index_suggestions = suggestions_dict['output_files'][1]['Suggestions']
+            script_suggestions = suggestions_dict['output_files'][0]['Suggestions']
+            response["index.html"] = iterate(response["index.html"], index_suggestions, response["script.js"])
+            response["script.js"] = iterate(response["script.js"], script_suggestions, response["index.html"])
         except Exception as e:
             print("BAD")
             print(e)
             return json.dumps(response)
-        print(response["index.html"])
-        for key in response:
-            main_file_content = response[key]
-            other_files = {k: v for k, v in response.items() if k != key}
-            print(key)
-            response[key] = bring_it_togther(main_file_content, other_files)
-        print(response["index.html"])
+        with open(os.path.join(output_dir, "index2.html"), 'w') as file:
+            file.write(response["index.html"])
+        with open(os.path.join(output_dir, "style2.css"), 'w') as file:
+            file.write(response["style.css"])
+        with open(os.path.join(output_dir, "script2.js"), 'w') as file:
+            file.write(response["script.js"])
+
+        for file in response_dict['output_files']:
+            file_name = file['file_name']
+            description = file['description']
+            
+            main_file_content = response[file_name]
+            other_files = {k: v for k, v in response.items() if k != file_name}
+            
+            print(file_name)
+            response[file_name] = bring_it_together(main_file_content, other_files, description)
+        # for key in response:
+        #     main_file_content = response[key]
+        #     other_files = {k: v for k, v in response.items() if k != key}
+        #     print(key)
+        #     response[key] = bring_it_togther(main_file_content, other_files)
+
+        with open(os.path.join(output_dir, "index3.html"), 'w') as file:
+            file.write(response["index.html"])
+        with open(os.path.join(output_dir, "style3.css"), 'w') as file:
+            file.write(response["style.css"])
+        with open(os.path.join(output_dir, "script3.js"), 'w') as file:
+            file.write(response["script.js"])
         return json.dumps(response)
 
         content_data = json.loads(response)

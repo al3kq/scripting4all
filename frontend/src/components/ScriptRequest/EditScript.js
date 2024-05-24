@@ -12,7 +12,7 @@ function EditScriptForm() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formValid, setFormValid] = useState(false);
   const [activeTab, setActiveTab] = useState('index.html');
-  const [fileContents, setFileContents] = useState({ 'index.html': '', 'styles.css': '', 'script.js': '' });
+  const [fileContents, setFileContents] = useState({ 'index.html': '', 'style.css': '', 'script.js': '' });
   const [loading, setLoading] = useState(false);
   const { scriptId } = useParams();
 
@@ -120,7 +120,7 @@ function EditScriptForm() {
         const css = stripCodeBlocks(codeObj['style.css']);
         const js = stripCodeBlocks(codeObj['script.js']);
         openInNewTab( html, css, js);
-        setFileContents({ 'index.html': html, 'styles.css': css, 'script.js': js });
+        setFileContents({ 'index.html': html, 'style.css': css, 'script.js': js });
       } catch (error) {
         console.error('Error parsing JSON:', error);
       }
@@ -167,7 +167,7 @@ function EditScriptForm() {
             <SmallHeading>Code Body:</SmallHeading>
             <div>
               <button onClick={() => setActiveTab('index.html')}>index.html</button>
-              <button onClick={() => setActiveTab('styles.css')}>styles.css</button>
+              <button onClick={() => setActiveTab('style.css')}>style.css</button>
               <button onClick={() => setActiveTab('script.js')}>script.js</button>
             </div>
             <AutoResizingTextarea

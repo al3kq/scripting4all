@@ -161,6 +161,11 @@ export const Button = styled.button`
   }
 `;
 
+export const SmallButton = styled(Button)`
+  padding: 10px 20px;
+  font-size: 14px;
+`;
+
 export const DeleteButton = styled(Button)`
   background: transparent;
   border: none;

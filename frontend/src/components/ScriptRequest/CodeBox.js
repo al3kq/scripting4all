@@ -20,7 +20,7 @@ function AutoResizingTextarea({ value, onChange }) {
         ref={textareaRef}
         value={value}
         onChange={e => {
-          onChange(e.target.value);
+          onChange(e);
           adjustHeight();
         }}
       />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api';
-import { Form, FormGroup, Label, Input, Textarea, Button, SmallHeading } from '../../styles';
+import { Form, FormGroup, Label, Input, Textarea, Button, SmallHeading, SmallButton } from '../../styles';
 import AutoResizingTextarea from './CodeBox';
 import { useParams } from 'react-router-dom';
 import LoadingIndicator from './LoadingIndicator';
@@ -68,20 +68,6 @@ function EditScriptForm() {
   const stripCodeBlocks = (code) => {
     return code.replace(/```(html|css|javascript)?\n/g, '').replace(/```/g, '');
   };
-  const injectContent = (iframe, html, css, js) => {
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    doc.open();
-    doc.write(html);
-    doc.close();
-    
-    const style = doc.createElement('style');
-    style.innerHTML = css;
-    doc.head.appendChild(style);
-    
-    const script = doc.createElement('script');
-    script.innerHTML = js;
-    doc.body.appendChild(script);
-  };
 
   const openInNewTab = (html, css, js) => {
       // Create a Blob for the CSS content
@@ -91,24 +77,18 @@ function EditScriptForm() {
     // Create a Blob for the JavaScript content
     const jsBlob = new Blob([js], { type: 'text/javascript' });
     const jsUrl = URL.createObjectURL(jsBlob);
-    const fullHtml = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Preview</title>
-        <style>${css}</style>
-      </head>
-      <body>
-        ${html}
-        <script>${js}</script>
-      </body>
-      </html>
-    `;
     html = html.replace('style.css', cssUrl);
     html = html.replace('script.js', jsUrl);
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     window.open(url);
+  };
+
+  const reloadTab = () => {
+    const html = fileContents['index.html'];
+    const css = fileContents['style.css'];
+    const js = fileContents['script.js'];
+    openInNewTab(html, css, js);
   };
 
   useEffect(() => {
@@ -169,6 +149,7 @@ function EditScriptForm() {
               <button onClick={() => setActiveTab('index.html')}>index.html</button>
               <button onClick={() => setActiveTab('style.css')}>style.css</button>
               <button onClick={() => setActiveTab('script.js')}>script.js</button>
+              <SmallButton type="button" onClick={reloadTab}>Reload</SmallButton>
             </div>
             <AutoResizingTextarea
               id="code"

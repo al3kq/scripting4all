@@ -128,7 +128,7 @@ function UserDashboard() {
       (
         <Button>Unsubscribe</Button>
       )}
-      <Button onClick={handleCreateScriptClick}>Create Script</Button>
+      <Button onClick={handleCreateScriptClick}>Create Site</Button>
       <Heading>Your Websites:</Heading>
       {isLoading ? (
         <Paragraph>Loading...</Paragraph>

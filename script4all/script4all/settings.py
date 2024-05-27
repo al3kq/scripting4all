@@ -27,8 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
+    '104.236.8.173',
     'thedeygroup.com',
-    '104.236.8.173'
 ]
 
 
@@ -143,6 +143,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://104.236.8.173:3000',
     'http://104.236.8.173:80',
     'http://localhost:80',
+    'http://thedeygroup.com',
 ]
 
 CORS_ALLOW_CREDENTIALS = True

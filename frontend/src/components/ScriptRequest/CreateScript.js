@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';  // Import useNavigate
 function CreateScriptForm() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [descriptionFile, setDescriptionFile] = useState(null);
   const [codeBody, setCodeBody] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formValid, setFormValid] = useState(false);
@@ -15,6 +16,10 @@ function CreateScriptForm() {
   const [fileContents, setFileContents] = useState({ 'index.html': '', 'style.css': '', 'script.js': '' });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate(); 
+
+  const handleFileChange = (e) => {
+    setDescriptionFile(e.target.files[0]);
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,13 +33,20 @@ function CreateScriptForm() {
       return;
     }
 
+    const formData = new FormData();
+    formData.append('title', title);
+    if (description) {
+      formData.append('description', description);
+    }
+    if (descriptionFile) {
+      formData.append('description_file', descriptionFile);
+    }
+
     try {
-      const response = await api.post('/api/scripts/script-requests/', {
-        title,
-        description,
-      }, {
+      const response = await api.post('/api/scripts/script-requests/', formData, {
         headers: {
           Authorization: `Token ${token}`,
+          'Content-Type': 'multipart/form-data'
         },
       });
       console.log(response.data);
@@ -121,6 +133,15 @@ function CreateScriptForm() {
             onChange={(e) => setDescription(e.target.value)}
             required
           ></Textarea>
+          </FormGroup>
+          <FormGroup>
+          <Label htmlFor="description_file">Upload Resume File (PDF or JPEG):</Label>
+          <Input
+            type="file"
+            id="description_file"
+            accept=".pdf, .jpeg, .jpg"
+            onChange={handleFileChange}
+          />
         </FormGroup>
         <Button type="submit" disabled={loading}>
           {loading ? 'Submitting...This may take a few minutes' : 'Submit Script Request'}

@@ -4,6 +4,9 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+def user_directory_path(instance, filename):
+    return f'script4all/temp_input/{instance.user.id}/{filename}'
+
 class ScriptRequest(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -15,6 +18,7 @@ class ScriptRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='script_requests', null=True)
     title = models.CharField(max_length=100)
     description = models.TextField()
+    description_file = models.FileField(upload_to=user_directory_path, default='', blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

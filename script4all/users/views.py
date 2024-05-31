@@ -9,6 +9,7 @@ from scripts.models import ScriptRequest
 from scripts.serializers import ScriptRequestSerializer
 from .serializers import UserSerializer, UserProfileSerializer
 import stripe
+import os
 
 class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -33,6 +34,11 @@ class UserRegistrationView(generics.CreateAPIView):
         # Create authentication token for the user
         token, created = Token.objects.get_or_create(user=user)
 
+        user_directory = os.path.join(settings.BASE_DIR, 'temp_input', str(user.id))
+        try:
+            os.makedirs(user_directory, exist_ok=True)
+        except OSError as e:
+            return Response({"error":f"Failed initiating user {str(e)}"})
         return Response({'token': token.key}, status=status.HTTP_201_CREATED)
 
 class UserLoginView(generics.GenericAPIView):

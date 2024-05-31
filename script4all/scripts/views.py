@@ -2,9 +2,10 @@ from rest_framework import generics, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 from .models import ScriptRequest, GeneratedScript
 from .serializers import ScriptRequestSerializer, GeneratedScriptSerializer
-from ai_logic.website_generator import generate_code
+from ai_logic.resume_generator import generate_code
 from django.db import models
 # from ai_logic.execute_script import execute_code
 
@@ -13,13 +14,20 @@ class ScriptRequestCreateView(generics.CreateAPIView):
     serializer_class = ScriptRequestSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+    parser_class = (MultiPartParser, FormParser)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         script_request = self.perform_create(serializer)
 
-        generated_code = generate_code(script_request)
+        if 'description_file' in request.FILES:
+            print("good")
+        file_content_type = request.FILES['description_file'].content_type
+
+        if script_request.description_file:
+            print("GOOD")
+        generated_code = generate_code(script_request, file_content_type)
         print(generated_code)
         generated_script = GeneratedScript.objects.create(
             script_request=script_request,
